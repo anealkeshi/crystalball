@@ -8,23 +8,19 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import com.anilkc.project.Pair;
 
-public class CrystalBallReducer extends Reducer<Pair, IntWritable, Pair, DoubleWritable> {
+/**
+ * @author Anil
+ *
+ */
+public class PairReducer extends Reducer<Pair, IntWritable, Pair, DoubleWritable> {
 
 	int marginal = 0;
-
-	/**
-	 * Called once at the start of the task.
-	 */
-	protected void setup(Context context) throws IOException, InterruptedException {
-		// NOTHING
-	}
 
 	protected void reduce(Pair pair, Iterable<IntWritable> values, Context context)
 			throws IOException, InterruptedException {
 		int sum = 0;
 
 		double relativeFrequency = 0.0;
-		System.out.println("Pair: " + pair);
 		for (IntWritable intWritable : values) {
 			int count = intWritable.get();
 
@@ -35,17 +31,10 @@ public class CrystalBallReducer extends Reducer<Pair, IntWritable, Pair, DoubleW
 			}
 		}
 		relativeFrequency = (double) sum / (double) marginal;
-		
+
 		if (!pair.getSecondValue().equals("*")) {
 			context.write(pair, new DoubleWritable(relativeFrequency));
 		}
-
 	}
 
-	/**
-	 * Called once at the end of the task.
-	 */
-	protected void cleanup(Context context) throws IOException, InterruptedException {
-		// NOTHING
-	}
 }

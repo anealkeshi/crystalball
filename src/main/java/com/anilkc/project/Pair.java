@@ -80,7 +80,7 @@ public class Pair implements Serializable, WritableComparable<Pair> {
 
 	@Override
 	public String toString() {
-		return "Pair [firstValue=" + firstValue + ", secondValue=" + secondValue + "]";
+		return "Pair (" + firstValue + ", " + secondValue + ")";
 	}
 
 	public int compareTo(Pair pair) {

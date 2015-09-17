@@ -1,8 +1,14 @@
-package com.anilkc.project;
+package com.anilkc.project.pairapproach;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Partitioner;
 
+import com.anilkc.project.Pair;
+
+/**
+ * @author Anil
+ *
+ */
 public class PairPartitioner extends Partitioner<Pair, IntWritable> {
 
 	@Override
