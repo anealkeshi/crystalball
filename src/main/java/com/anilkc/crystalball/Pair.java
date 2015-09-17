@@ -1,4 +1,4 @@
-package com.anilkc.project;
+package com.anilkc.crystalball;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -86,10 +86,10 @@ public class Pair implements Serializable, WritableComparable<Pair> {
 	public int compareTo(Pair pair) {
 		int firstResult = Integer.valueOf(this.getFirstValue()).compareTo(Integer.valueOf(pair.getFirstValue()));
 		if (firstResult == 0) {
-			if (this.getSecondValue().equals("*")) {
+			if (this.getSecondValue().equals(CommonConstants.SPECIAL_CHARACTER)) {
 				return -1;
 			}
-			if (pair.getSecondValue().equals("*")) {
+			if (pair.getSecondValue().equals(CommonConstants.SPECIAL_CHARACTER)) {
 				return 1;
 			}
 			return Integer.valueOf(this.getSecondValue()).compareTo(Integer.valueOf(pair.getSecondValue()));

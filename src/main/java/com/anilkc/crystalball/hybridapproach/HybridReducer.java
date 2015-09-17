@@ -1,4 +1,4 @@
-package com.anilkc.project.hybridapproach;
+package com.anilkc.crystalball.hybridapproach;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,14 +7,21 @@ import java.util.Map;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.anilkc.project.Pair;
+import com.anilkc.crystalball.Pair;
+import com.anilkc.crystalball.Utils;
 
 /**
+ * Reducer class for Hybrid Approach
+ * 
  * @author Anil
  *
  */
 public class HybridReducer extends Reducer<Pair, IntWritable, Text, Text> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(HybridReducer.class);
 
 	private int marginal = 0;
 	private Map<String, Double> stripe;
@@ -30,13 +37,20 @@ public class HybridReducer extends Reducer<Pair, IntWritable, Text, Text> {
 			throws IOException, InterruptedException {
 
 		if (null == currentTerm) {
+
 			currentTerm = pair.getFirstValue();
+
 		} else if (!currentTerm.equals(pair.getFirstValue())) {
+
 			for (Map.Entry<String, Double> entry : stripe.entrySet()) {
-				stripe.put(entry.getKey(), entry.getValue() / marginal);
+				stripe.put(entry.getKey(), Utils.getFormattedDouble(entry.getValue() / marginal));
 
 			}
-			context.write(new Text(currentTerm), new Text(outWritableToText(stripe)));
+
+			String finalMap = "[ " + Utils.converMaptoString(stripe) + " ]";
+			LOG.info("Hybrid Reducer Output: " + currentTerm + " " + finalMap);
+
+			context.write(new Text(currentTerm), new Text(finalMap));
 
 			// reset for new term
 			marginal = 0;
@@ -56,23 +70,19 @@ public class HybridReducer extends Reducer<Pair, IntWritable, Text, Text> {
 
 	}
 
-	private String outWritableToText(Map<String, Double> stripeMap) {
-		String text = "";
-		for (Map.Entry<String, Double> entry : stripeMap.entrySet()) {
-			text = text + "(" + entry.getKey() + ", " + entry.getValue() + ") ";
-		}
-		return text;
-	}
-
 	@Override
 	protected void cleanup(Reducer<Pair, IntWritable, Text, Text>.Context context)
 			throws IOException, InterruptedException {
 
 		for (Map.Entry<String, Double> entry : stripe.entrySet()) {
-			stripe.put(entry.getKey(), entry.getValue() / marginal);
+			stripe.put(entry.getKey(), Utils.getFormattedDouble(entry.getValue() / marginal));
 
 		}
-		context.write(new Text(currentTerm), new Text(outWritableToText(stripe)));
+
+		String finalMap = "[ " + Utils.converMaptoString(stripe) + " ]";
+		LOG.info("Hybrid Reducer Output: " + currentTerm + " " + finalMap);
+
+		context.write(new Text(currentTerm), new Text(finalMap));
 	}
 
 }

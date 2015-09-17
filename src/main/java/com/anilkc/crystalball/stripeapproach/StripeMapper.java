@@ -1,25 +1,35 @@
-package com.anilkc.project.stripeapproach;
+package com.anilkc.crystalball.stripeapproach;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.anilkc.crystalball.CommonConstants;
+import com.anilkc.crystalball.Utils;
+
+/**
+ * Mapper class for Stripe approach
+ * 
+ * @author Anil
+ *
+ */
 public class StripeMapper extends Mapper<LongWritable, Text, Text, MapWritable> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(StripeMapper.class);
 
 	@Override
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
-		String[] datas = value.toString().split("\\s");
+		String[] datas = value.toString().split(CommonConstants.SPACE_REGEX);
 
-		System.out.println("Received line: " + value.toString());
-		System.out.println("Processing....");
+		LOG.info("Received line: " + value.toString());
+		LOG.info("Processing....");
 
 		MapWritable stripe;
 		for (int i = 0; i < datas.length - 1; i++) {
@@ -42,16 +52,8 @@ public class StripeMapper extends Mapper<LongWritable, Text, Text, MapWritable> 
 				}
 			}
 
+			LOG.info("Stripe Mapper Output: " + data + " " + Utils.convertMapWritableToString(stripe));
 			context.write(data, stripe);
 		}
 	}
-
-	private String outWritableToText(MapWritable mapWritable) {
-		String text = "";
-		for (Writable key : mapWritable.keySet()) {
-			text = text + "(" + (Text) key + ", " + mapWritable.get(key) + ") ";
-		}
-		return text;
-	}
-
 }

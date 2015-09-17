@@ -1,9 +1,9 @@
-package com.anilkc.project.pairapproach;
+package com.anilkc.crystalball.pairapproach;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Partitioner;
 
-import com.anilkc.project.Pair;
+import com.anilkc.crystalball.Pair;
 
 /**
  * @author Anil

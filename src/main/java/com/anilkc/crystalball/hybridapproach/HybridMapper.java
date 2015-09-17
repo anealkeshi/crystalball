@@ -1,4 +1,4 @@
-package com.anilkc.project.pairapproach;
+package com.anilkc.crystalball.hybridapproach;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,10 +8,21 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.anilkc.project.Pair;
+import com.anilkc.crystalball.CommonConstants;
+import com.anilkc.crystalball.Pair;
 
-public class PairMapper extends Mapper<LongWritable, Text, Pair, IntWritable> {
+/**
+ * Hybrid approach mapper class
+ * 
+ * @author Anil
+ *
+ */
+public class HybridMapper extends Mapper<LongWritable, Text, Pair, IntWritable> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(HybridMapper.class);
 
 	private Map<Pair, Integer> map;
 
@@ -25,10 +36,10 @@ public class PairMapper extends Mapper<LongWritable, Text, Pair, IntWritable> {
 	@Override
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
-		String[] datas = value.toString().split("\\s");
+		String[] datas = value.toString().split(CommonConstants.SPACE_REGEX);
 
-		System.out.println("Received line: " + value.toString());
-		System.out.println("Processing....");
+		LOG.info("Received line: " + value.toString());
+		LOG.info("Processing....");
 
 		for (int i = 0; i < datas.length - 1; i++) {
 			String data = datas[i];
@@ -38,21 +49,12 @@ public class PairMapper extends Mapper<LongWritable, Text, Pair, IntWritable> {
 				}
 
 				Pair pair = new Pair(data, datas[j]);
-				System.out.println(pair);
+				LOG.info(pair.toString());
 
 				if (!map.containsKey(pair)) {
 					map.put(pair, 1);
 				} else {
 					map.put(pair, map.get(pair) + 1);
-				}
-
-				Pair specialPair = new Pair(data, "*");
-				System.out.println(specialPair);
-
-				if (!map.containsKey(specialPair)) {
-					map.put(specialPair, 1);
-				} else {
-					map.put(specialPair, map.get(specialPair) + 1);
 				}
 			}
 		}
@@ -62,9 +64,11 @@ public class PairMapper extends Mapper<LongWritable, Text, Pair, IntWritable> {
 	 * Called once at the end of the task.
 	 */
 	protected void cleanup(Context context) throws IOException, InterruptedException {
-		System.out.println("Mapper output: ");
+
+		LOG.info("Mapper output: ");
+
 		for (Pair key : map.keySet()) {
-			System.out.println(key + " count " + map.get(key));
+			LOG.info(key + " count " + map.get(key));
 			context.write(key, new IntWritable(map.get(key)));
 		}
 	}
