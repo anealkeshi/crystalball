@@ -1,5 +1,11 @@
 package com.anilkc.crystalball;
 
+/**
+ * Contains the common constants used in this project
+ * 
+ * @author Anil
+ *
+ */
 public class CommonConstants {
 
 	private CommonConstants() {

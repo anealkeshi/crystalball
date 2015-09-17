@@ -14,6 +14,13 @@ import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Configuration class for Stripe approach
+ * 
+ * @author Anil
+ * 
+ *
+ */
 public class StripeConfiguration extends Configured implements Tool {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StripeConfiguration.class);
